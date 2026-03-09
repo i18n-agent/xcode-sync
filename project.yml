@@ -1,0 +1,34 @@
+name: i18nAgent
+options:
+  bundleIdPrefix: ai.i18nagent
+  deploymentTarget:
+    macOS: "14.0"
+  xcodeVersion: "15.0"
+targets:
+  i18nAgent:
+    type: application
+    platform: macOS
+    sources:
+      - i18nAgent
+    settings:
+      base:
+        INFOPLIST_FILE: i18nAgent/Info.plist
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        SWIFT_VERSION: "5.9"
+        PRODUCT_BUNDLE_IDENTIFIER: ai.i18nagent.xcode-plugin
+        PRODUCT_NAME: i18n Agent
+        PRODUCT_MODULE_NAME: i18nAgent
+        CODE_SIGN_ENTITLEMENTS: i18nAgent/i18nAgent.entitlements
+  i18nAgentTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - i18nAgentTests
+    dependencies:
+      - target: i18nAgent
+    settings:
+      base:
+        SWIFT_VERSION: "5.9"
+        GENERATE_INFOPLIST_FILE: "YES"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/i18n Agent.app/Contents/MacOS/i18n Agent"

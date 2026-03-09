@@ -1,0 +1,123 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "noProject" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "No project detected" } } }
+    },
+    "pullTranslations" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Pull Translations" } } }
+    },
+    "pushTranslations" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Push Translations" } } }
+    },
+    "syncing" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Syncing..." } } }
+    },
+    "lastSync %@" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Last sync: %@" } } }
+    },
+    "syncedLanguages %lld" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "%lld languages synced" } } }
+    },
+    "cliNotInstalled" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "CLI not installed. Run: npm i -g @i18n-agent/cli" } } }
+    },
+    "noApiKey" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "No API key. Run: i18nagent login" } } }
+    },
+    "settings" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Settings..." } } }
+    },
+    "quit" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Quit" } } }
+    },
+    "selectLanguages" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Select languages:" } } }
+    },
+    "selectAll" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Select All" } } }
+    },
+    "deselectAll" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Deselect All" } } }
+    },
+    "cancel" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Cancel" } } }
+    },
+    "translate" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Translate" } } }
+    },
+    "cliConfiguration" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "CLI Configuration" } } }
+    },
+    "cliPath" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "CLI Path" } } }
+    },
+    "configFile" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Config File" } } }
+    },
+    "apiKey" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "API Key" } } }
+    },
+    "notFound" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Not found" } } }
+    },
+    "notConfigured" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Not configured" } } }
+    },
+    "installCLIHint" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Install CLI: npm install -g @i18n-agent/cli" } } }
+    },
+    "loginHint" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Login: run 'i18nagent login' in terminal" } } }
+    },
+    "openConfigFolder" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Open Config Folder" } } }
+    },
+    "notificationPullTitle %@" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Translations updated — %@" } } }
+    },
+    "notificationPullBody %lld %lld" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "%lld languages, %lld files updated" } } }
+    },
+    "notificationPushTitle %@" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Translations uploaded — %@" } } }
+    },
+    "notificationPushBody %lld %lld" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "%lld languages, %lld file pairs uploaded" } } }
+    },
+    "notificationErrorTitle %@" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Translation failed — %@" } } }
+    },
+    "xcodeNotRunning" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Xcode is not running. Open Xcode to get started." } } }
+    },
+    "noProjectOpen" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "No project is open in Xcode." } } }
+    },
+    "permissionDenied" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Permission denied. Allow Automation access in System Settings." } } }
+    },
+    "cliNotFound" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "i18nagent CLI not found. Install with: npm i -g @i18n-agent/cli" } } }
+    },
+    "unknownError" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Unknown error" } } }
+    },
+    "syncFailed %@" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Sync failed: %@" } } }
+    },
+    "pullComplete %lld" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "%lld languages updated" } } }
+    },
+    "pushComplete %lld" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "%lld language pairs uploaded" } } }
+    },
+    "executionFailed %@" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "CLI execution failed: %@" } } }
+    },
+    "parseError %@" : {
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Failed to parse CLI output: %@" } } }
+    }
+  },
+  "version" : "1.0"
+}
