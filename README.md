@@ -133,4 +133,6 @@ xcodebuild test -scheme i18nAgent -destination 'platform=macOS'
 
 ## License
 
-MIT
+MIT License - see [LICENSE](LICENSE) file.
+
+Built by [i18nagent.ai](https://i18nagent.ai)
