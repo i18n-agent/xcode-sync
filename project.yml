@@ -19,6 +19,8 @@ targets:
         PRODUCT_NAME: i18n Agent
         PRODUCT_MODULE_NAME: i18nAgent
         CODE_SIGN_ENTITLEMENTS: i18nAgent/i18nAgent.entitlements
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
   i18nAgentTests:
     type: bundle.unit-test
     platform: macOS
