@@ -46,14 +46,26 @@ if [ -f "$CONFIG_FILE" ] && grep -q "apiKey" "$CONFIG_FILE" 2>/dev/null; then
 else
     echo ""
     echo "  You need an API key to use i18n Agent."
-    echo "  Running 'i18nagent login' to set up your account..."
+    echo "  Get one at: https://app.i18nagent.ai"
     echo ""
-    i18nagent login
+    # Restore interactive input from terminal (curl | bash steals stdin)
+    if [ -t 0 ]; then
+        # Already interactive — just run login
+        i18nagent login
+    else
+        # stdin is piped — read from /dev/tty instead
+        echo "  Paste your API key (starts with i18n_):"
+        printf "  > "
+        read -r API_KEY < /dev/tty
+        if [ -n "$API_KEY" ]; then
+            i18nagent login --key "$API_KEY"
+        fi
+    fi
     echo ""
     if [ -f "$CONFIG_FILE" ] && grep -q "apiKey" "$CONFIG_FILE" 2>/dev/null; then
         echo "  ✓ API key configured"
     else
-        echo "  ⚠ API key not found. Run 'i18nagent login' later to set it up."
+        echo "  ⚠ API key not set. Run 'i18nagent login' later to configure it."
     fi
 fi
 
