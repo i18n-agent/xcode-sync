@@ -1,10 +1,8 @@
 import SwiftUI
 
 struct MenuBarView: View {
-    @State private var state = ProjectState()
-    @State private var showLanguagePicker = false
-    @State private var cliPath: String?
-    @State private var hasApiKey: Bool = false
+    @Bindable var appState: AppState
+    @Environment(\.openWindow) private var openWindow
 
     private let detector = XcodeProjectDetector()
     private let scanner = LocalizationScanner()
@@ -12,203 +10,106 @@ struct MenuBarView: View {
     private let notifications = NotificationManager()
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            // Project name header
-            HStack {
-                Image(systemName: "globe")
-                Text(state.projectName ?? String(localized: "noProject"))
-                    .font(.headline)
-            }
-            .padding(.horizontal, 8)
-            .padding(.top, 4)
+        let state = appState.project
 
-            Divider()
-
-            // Pull button
-            Button {
-                detectProjectAndShowPicker()
-            } label: {
-                Label(String(localized: "pullTranslations"), systemImage: "arrow.down.circle")
-            }
-            .disabled(state.isSyncing)
-
-            // Push button
-            Button {
-                Task { await pushAll() }
-            } label: {
-                Label(String(localized: "pushTranslations"), systemImage: "arrow.up.circle")
-            }
-            .disabled(state.isSyncing)
-
-            Divider()
-
-            // Status
-            if state.isSyncing {
-                HStack {
-                    ProgressView()
-                        .scaleEffect(0.7)
-                    Text(String(localized: "syncing"))
-                        .foregroundStyle(.secondary)
-                        .font(.caption)
-                }
-                .padding(.horizontal, 8)
-            } else if let lastSync = state.lastSync {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(String(localized: "lastSync \(lastSync.timestamp.formatted(.relative(presentation: .named)))"))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    if lastSync.isSuccess {
-                        Text(String(localized: "syncedLanguages \(lastSync.languageCount)"))
-                            .font(.caption)
-                            .foregroundStyle(.green)
-                    } else {
-                        Text(lastSync.error ?? String(localized: "unknownError"))
-                            .font(.caption)
-                            .foregroundStyle(.red)
-                    }
-                }
-                .padding(.horizontal, 8)
-            }
-
-            // CLI status
-            if cliPath == nil {
-                Text(String(localized: "cliNotInstalled"))
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-                    .padding(.horizontal, 8)
-            } else if !hasApiKey {
-                Text(String(localized: "noApiKey"))
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-                    .padding(.horizontal, 8)
-            }
-
-            Divider()
-
-            SettingsLink {
-                Label(String(localized: "settings"), systemImage: "gear")
-            }
-
-            Button(String(localized: "quit")) {
-                NSApplication.shared.terminate(nil)
-            }
-            .keyboardShortcut("q")
+        if let name = state.projectName {
+            Text(name).disabled(true)
+        } else {
+            Text(String(localized: "noProject")).disabled(true)
         }
-        .padding(.vertical, 4)
-        .frame(width: 240)
-        .onAppear {
-            cliPath = cliBridge.findCLIPath()
-            hasApiKey = cliBridge.readApiKey() != nil
+
+        Divider()
+
+        Button(String(localized: "pullTranslations")) {
+            detectProjectAndShowPicker()
         }
-        .popover(isPresented: $showLanguagePicker) {
-            LanguagePickerView(
-                regions: state.targetRegions,
-                onTranslate: { selectedLanguages in
-                    showLanguagePicker = false
-                    Task { await pullTranslations(languages: selectedLanguages) }
-                },
-                onCancel: { showLanguagePicker = false }
-            )
+        .disabled(state.isSyncing)
+
+        Button(String(localized: "pushTranslations")) {
+            Task { await pushAll() }
         }
+        .disabled(state.isSyncing)
+
+        Divider()
+
+        if state.isSyncing {
+            Text(String(localized: "syncing")).disabled(true)
+        } else if let lastSync = state.lastSync {
+            if lastSync.isSuccess {
+                Text(String(localized: "syncedLanguages \(lastSync.languageCount)")).disabled(true)
+            } else {
+                Text(lastSync.error ?? String(localized: "unknownError")).disabled(true)
+            }
+        }
+
+        if cliBridge.findCLIPath() == nil {
+            Text(String(localized: "cliNotInstalled")).disabled(true)
+        } else if cliBridge.readApiKey() == nil {
+            Text(String(localized: "noApiKey")).disabled(true)
+        }
+
+        Divider()
+
+        Button(String(localized: "settings")) {
+            openWindow(id: "settings")
+            NSApp.activate(ignoringOtherApps: true)
+        }
+
+        Button(String(localized: "quit")) {
+            NSApplication.shared.terminate(nil)
+        }
+        .keyboardShortcut("q")
     }
 
     // MARK: - Actions
 
     private func detectProjectAndShowPicker() {
-        state.isSyncing = true
+        appState.project.isSyncing = true
         Task {
-            defer { state.isSyncing = false }
+            defer { appState.project.isSyncing = false }
             do {
                 let result = try detector.detectActiveProject()
                 let scanResult = scanner.scan(
                     projectDir: result.projectDir,
                     xcodeprojPath: result.projectPath
                 )
-                state.projectPath = result.projectDir
-                state.projectName = result.projectName
-                state.knownRegions = scanResult.knownRegions
-                state.developmentRegion = scanResult.developmentRegion
-                state.localizationFiles = scanResult.localizationFiles
-                state.isSyncing = false
-                showLanguagePicker = true
+                appState.project.projectPath = result.projectDir
+                appState.project.projectName = result.projectName
+                appState.project.knownRegions = scanResult.knownRegions
+                appState.project.developmentRegion = scanResult.developmentRegion
+                appState.project.localizationFiles = scanResult.localizationFiles
+                appState.project.isSyncing = false
+                openWindow(id: "language-picker")
             } catch {
-                state.lastSync = SyncResult(operation: .pull, languageCount: 0, fileCount: 0, error: error.localizedDescription)
+                appState.project.lastSync = SyncResult(operation: .pull, languageCount: 0, fileCount: 0, error: error.localizedDescription)
             }
         }
-    }
-
-    private func pullTranslations(languages: [String]) async {
-        state.isSyncing = true
-        defer { state.isSyncing = false }
-
-        guard let projectDir = state.projectPath else { return }
-        let namespace = state.projectName ?? "unknown"
-
-        let sourceFiles = state.localizationFiles.filter { file in
-            file.format == .strings || file.format == .xcstrings || file.format == .stringsdict
-        }
-
-        var totalFiles = 0
-        var lastError: String?
-
-        for file in sourceFiles {
-            let outputDir = NSTemporaryDirectory() + "i18nagent-\(UUID().uuidString)"
-            do {
-                let result = try await cliBridge.runTranslate(
-                    filePath: file.sourcePath,
-                    languages: languages,
-                    namespace: namespace,
-                    outputDir: outputDir
-                )
-                for writtenFile in result.filesWritten {
-                    let lang = URL(fileURLWithPath: writtenFile).deletingPathExtension().lastPathComponent
-                    let lprojDir = projectDir + "/\(lang).lproj"
-                    try? FileManager.default.createDirectory(atPath: lprojDir, withIntermediateDirectories: true)
-                    let dest = lprojDir + "/\(file.baseName)"
-                    try? FileManager.default.removeItem(atPath: dest)
-                    try FileManager.default.copyItem(atPath: writtenFile, toPath: dest)
-                    totalFiles += 1
-                }
-                try? FileManager.default.removeItem(atPath: outputDir)
-            } catch {
-                lastError = error.localizedDescription
-            }
-        }
-
-        let syncResult = SyncResult(
-            operation: .pull,
-            languageCount: languages.count,
-            fileCount: totalFiles,
-            error: lastError
-        )
-        state.lastSync = syncResult
-        notifications.send(for: syncResult, projectName: state.projectName ?? "Project", projectDir: state.projectPath)
     }
 
     private func pushAll() async {
         do {
             let result = try detector.detectActiveProject()
-            state.projectPath = result.projectDir
-            state.projectName = result.projectName
+            appState.project.projectPath = result.projectDir
+            appState.project.projectName = result.projectName
 
             let scanResult = scanner.scan(
                 projectDir: result.projectDir,
                 xcodeprojPath: result.projectPath
             )
-            state.developmentRegion = scanResult.developmentRegion
-            state.knownRegions = scanResult.knownRegions
+            appState.project.developmentRegion = scanResult.developmentRegion
+            appState.project.knownRegions = scanResult.knownRegions
         } catch {
-            state.lastSync = SyncResult(operation: .push, languageCount: 0, fileCount: 0, error: error.localizedDescription)
+            appState.project.lastSync = SyncResult(operation: .push, languageCount: 0, fileCount: 0, error: error.localizedDescription)
             return
         }
 
-        state.isSyncing = true
-        defer { state.isSyncing = false }
+        appState.project.isSyncing = true
+        defer { appState.project.isSyncing = false }
 
-        guard let projectDir = state.projectPath else { return }
-        let sourceLanguage = state.developmentRegion ?? "en"
-        let namespace = state.projectName ?? "unknown"
-        let targetRegions = state.targetRegions
+        guard let projectDir = appState.project.projectPath else { return }
+        let sourceLanguage = appState.project.developmentRegion ?? "en"
+        let namespace = appState.project.projectName ?? "unknown"
+        let targetRegions = appState.project.targetRegions
 
         var totalPairs = 0
         var lastError: String?
@@ -243,7 +144,7 @@ struct MenuBarView: View {
             fileCount: totalPairs,
             error: lastError
         )
-        state.lastSync = syncResult
-        notifications.send(for: syncResult, projectName: state.projectName ?? "Project", projectDir: state.projectPath)
+        appState.project.lastSync = syncResult
+        notifications.send(for: syncResult, projectName: appState.project.projectName ?? "Project", projectDir: appState.project.projectPath)
     }
 }
