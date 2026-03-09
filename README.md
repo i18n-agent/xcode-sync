@@ -10,7 +10,11 @@ A lightweight macOS menu bar app that integrates [i18n Agent](https://i18nagent.
 2. Open the DMG and drag **i18n Agent** to Applications
 3. Launch from Applications — the globe icon appears in your menu bar
 
+> If macOS shows "app can't be opened because it is from an unidentified developer", right-click the app, select **Open**, then click **Open** in the dialog.
+
 ### Build from source
+
+Requires Xcode 15+ and [XcodeGen](https://github.com/yonaskolb/XcodeGen).
 
 ```bash
 # Install XcodeGen
@@ -21,10 +25,36 @@ git clone https://github.com/i18n-agent/xcode-sync.git
 cd xcode-sync
 xcodegen generate
 xcodebuild -scheme i18nAgent -configuration Release build
+```
 
-# Or open in Xcode
+The built app is at:
+```
+~/Library/Developer/Xcode/DerivedData/i18nAgent-*/Build/Products/Release/i18n Agent.app
+```
+
+To install, copy it to Applications:
+```bash
+cp -R ~/Library/Developer/Xcode/DerivedData/i18nAgent-*/Build/Products/Release/i18n\ Agent.app /Applications/
+```
+
+Or open the project in Xcode and run from there:
+```bash
 open i18nAgent.xcodeproj
 ```
+
+## Prerequisites
+
+Before using the app, install and configure the i18n Agent CLI:
+
+```bash
+# Install the CLI
+npm install -g i18nagent
+
+# Log in to get your API key
+i18nagent login
+```
+
+This stores your API key at `~/.config/i18nagent/config.json`, which the menu bar app reads automatically.
 
 ## Features
 
@@ -34,22 +64,16 @@ open i18nAgent.xcodeproj
 - **macOS notifications** on completion
 - **Settings panel** showing CLI path, config file location, and API key status
 
-## Requirements
-
-- macOS 14.0+
-- [i18n Agent CLI](https://i18nagent.ai) installed (`npm install -g i18nagent`)
-- API key configured (`i18nagent login`)
-
 ## Usage
 
 Click the globe icon in the menu bar:
 
-1. **Pull** — detects your active Xcode project, scans for localization files and known regions, lets you pick target languages, then translates
+1. **Pull** — detects your active Xcode project, scans for localization files and known regions, lets you pick target languages, then translates and writes files to the correct `.lproj` directories
 2. **Push** — detects your active Xcode project, finds all `.lproj` translation files, uploads them as translation memory pairs
 
-## Configuration
+Open **Settings** (from the menu or `Cmd+,`) to check your CLI path and API key status.
 
-The app reads your i18n Agent config from `~/.config/i18nagent/config.json`. Run `i18nagent login` in terminal to set up your API key.
+> **Note:** The app communicates with Xcode via AppleScript. macOS will ask for permission the first time — click **OK** to allow it.
 
 ## Release (maintainers)
 
