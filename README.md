@@ -131,6 +131,12 @@ xcodegen generate
 xcodebuild test -scheme i18nAgent -destination 'platform=macOS'
 ```
 
+## Example
+
+A dummy Xcode project is included in the [`example/`](./example/) directory for testing the Pull Translations workflow. It contains a minimal `.xcodeproj` with localization files you can use to verify the menu bar app end-to-end.
+
+See [`example/README.md`](./example/README.md) for full setup instructions.
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) file.
